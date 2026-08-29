@@ -1,0 +1,10 @@
+<svg width="22" height="22" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <title>AI Usage Tracker</title>
+  <rect x="334" y="390" width="92" height="430" rx="18" fill="#000000"/>
+  <rect x="466" y="185" width="92" height="635" rx="18" fill="#000000"/>
+  <rect x="598" y="329" width="92" height="491" rx="18" fill="#000000"/>
+  <polyline points="380,350 512,145 644,289" fill="none" stroke="#000000" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="380" cy="350" r="20" fill="#000000"/>
+  <circle cx="512" cy="145" r="20" fill="#000000"/>
+  <circle cx="644" cy="289" r="20" fill="#000000"/>
+</svg>

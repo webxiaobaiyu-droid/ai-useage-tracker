@@ -1,0 +1,19 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <title>AI Usage Tracker</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182F7D"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="225" fill="url(#bg)"/>
+  <!-- 用量柱 -->
+  <rect x="334" y="390" width="92" height="430" rx="18" fill="#FFFFFF"/>
+  <rect x="466" y="185" width="92" height="635" rx="18" fill="#FFFFFF"/>
+  <rect x="598" y="329" width="92" height="491" rx="18" fill="#FFFFFF"/>
+  <!-- 趋势折线 -->
+  <polyline points="380,350 512,145 644,289" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="380" cy="350" r="20" fill="#FFFFFF"/>
+  <circle cx="512" cy="145" r="20" fill="#FFFFFF"/>
+  <circle cx="644" cy="289" r="20" fill="#FFFFFF"/>
+</svg>

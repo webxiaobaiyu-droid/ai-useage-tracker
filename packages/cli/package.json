@@ -1,0 +1,54 @@
+{
+  "name": "@ai-usage-tracker/cli",
+  "version": "0.1.6",
+  "description": "AI 用量追踪 CLI：Token 用量明细追踪，本地记录与用量看板。",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ai-usage-tracker/ai-usage-tracker.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/ai-usage-tracker/ai-usage-tracker/issues"
+  },
+  "homepage": "https://github.com/ai-usage-tracker/ai-usage-tracker#readme",
+  "keywords": [
+    "ai",
+    "token",
+    "usage",
+    "claude",
+    "codex",
+    "cursor",
+    "cli"
+  ],
+  "bin": {
+    "ai-usage": "./bin/ai-usage.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node ./scripts/copy-dashboard.mjs",
+    "start": "node ./bin/ai-usage.js start",
+    "sync": "node ./bin/ai-usage.js sync",
+    "status": "node ./bin/ai-usage.js status",
+    "service": "node ./bin/ai-usage.js service"
+  },
+  "dependencies": {
+    "@ai-usage-tracker/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@ai-usage-tracker/dashboard": "workspace:*",
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
