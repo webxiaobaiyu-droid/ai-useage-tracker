@@ -161,6 +161,13 @@ img { display: block; max-width: 100%; }
 /* ============ Theme reveal ============ */
 /* Circle reveal from the click point when switching themes (View Transitions).
    --reveal-x/y are set by JS from the click coordinates. */
+/* While the snapshots animate, hide the real page: the snapshots own the
+   screen, and the real (already re-themed) DOM swaps in at the end without a
+   mismatched flash frame. `visibility` keeps layout so the snapshot size
+   matches exactly. */
+html.vt-active body {
+  visibility: hidden;
+}
 ::view-transition-old(root) {
   /* Hold the old page fully opaque: the expanding circle then "wipes" it
      away, and the body background underneath (already re-themed) never
@@ -1098,7 +1105,14 @@ footer {
       apply(next);
       return;
     }
-    document.startViewTransition(() => apply(next));
+    // Hide the real DOM while the snapshot animation runs: the snapshots own
+    // the screen during the reveal, and the real DOM (already re-themed)
+    // swaps in atomically at the end — no one-frame mismatch flash.
+    root.classList.add('vt-active');
+    const vt = document.startViewTransition(() => apply(next));
+    vt.finished
+      .catch(() => {})
+      .finally(() => root.classList.remove('vt-active'));
   };
 
   toggle.addEventListener('click', onToggle);
