@@ -121,7 +121,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
+  /* No background/color transition here: the theme reveal is handled by the
+     View Transition, and a CSS transition on the real body would desync from
+     the snapshot (it keeps transitioning while the snapshot swaps → flash). */
 }
 ::selection { background: var(--selection); }
 a { color: inherit; text-decoration: none; }
