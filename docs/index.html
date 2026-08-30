@@ -63,6 +63,7 @@
   --violet-dim: rgba(157, 140, 255, 0.14);
   --band-glow: rgba(255, 180, 84, 0.03);
   --card-glow: rgba(255, 180, 84, 0.08);
+  --ripple: rgba(255, 180, 84, 0.35);
   --radius: 14px;
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
@@ -109,6 +110,7 @@
   --violet-dim: rgba(109, 91, 208, 0.10);
   --band-glow: rgba(217, 119, 6, 0.04);
   --card-glow: rgba(217, 119, 6, 0.06);
+  --ripple: rgba(217, 119, 6, 0.28);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -152,6 +154,27 @@ img { display: block; max-width: 100%; }
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+/* ============ Click ripple ============ */
+.ripple-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ripple);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-expand 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+}
+@keyframes ripple-expand {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
 }
 
 /* ============ Layout helpers ============ */
@@ -679,6 +702,7 @@ footer {
   .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
   .hero-badge .dot, .dash-foot .live .dot { animation: none; }
+  .ripple { animation: none; display: none; }
 }
 
 /* ============ Responsive ============ */
@@ -704,6 +728,7 @@ footer {
 <body>
 <div class="bg-glow"></div>
 <div class="bg-grid"></div>
+<div class="ripple-layer" id="rippleLayer" aria-hidden="true"></div>
 
 <!-- ============ Nav ============ -->
 <nav class="nav">
@@ -942,6 +967,54 @@ footer {
 </footer>
 
 <script>
+/* ============ Click ripple ============ */
+(function () {
+  const layer = document.getElementById('rippleLayer');
+  if (!layer) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const SIZE_FACTOR = 2.2;
+  const MAX_RIPPLES = 24;
+  const ANIM_MS = 600;
+  let count = 0;
+
+  const cleanup = () => {
+    if (count <= 0) return;
+    count -= 1;
+    const el = layer.firstElementChild;
+    if (el) el.remove();
+  };
+
+  document.addEventListener('pointerdown', (e) => {
+    // Skip ripples on the nav toggle / burger (they already give feedback).
+    const target = e.target;
+    if (target.closest && target.closest('.theme-toggle, .nav-burger')) return;
+
+    // Cap concurrent ripples; drop oldest once we exceed the budget.
+    if (count >= MAX_RIPPLES) {
+      cleanup();
+    }
+    count += 1;
+
+    const rect = layer.getBoundingClientRect();
+    const dx = Math.max(e.clientX - rect.left, rect.right - e.clientX);
+    const dy = Math.max(e.clientY - rect.top, rect.bottom - e.clientY);
+    const diameter = Math.hypot(dx, dy) * SIZE_FACTOR;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    ripple.style.width = diameter + 'px';
+    ripple.style.height = diameter + 'px';
+    layer.appendChild(ripple);
+
+    // Remove after the animation finishes. Timer fallback covers cases where
+    // animationend never fires (hidden tab, interrupted frame).
+    setTimeout(cleanup, ANIM_MS);
+  });
+})();
+
 /* ============ Heatmap cells (pseudo-random but deterministic) ============ */
 (function () {
   const grid = document.getElementById('heatGrid');
