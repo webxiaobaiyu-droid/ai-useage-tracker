@@ -160,14 +160,32 @@ img { display: block; max-width: 100%; }
 /* Circle reveal from the click point when switching themes (View Transitions).
    --reveal-x/y are set by JS from the click coordinates. */
 ::view-transition-old(root) {
-  animation: none;
+  /* Hold the old page fully opaque: the expanding circle then "wipes" it
+     away, and the body background underneath (already re-themed) never
+     flashes through a fading old snapshot. */
+  animation: theme-hold 1.1s linear;
 }
 ::view-transition-new(root) {
-  animation: theme-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Longer duration + explicit opacity ramp: the default crossfade would
+     otherwise flash the old page on top of the expanding circle. */
+  animation: theme-reveal 1.1s cubic-bezier(0.22, 1, 0.36, 1);
   clip-path: circle(0% at var(--reveal-x, 50%) var(--reveal-y, 50%));
 }
+@keyframes theme-hold {
+  from, to { opacity: 1; }
+}
 @keyframes theme-reveal {
-  to { clip-path: circle(150% at var(--reveal-x, 50%) var(--reveal-y, 50%)); }
+  0% {
+    clip-path: circle(0% at var(--reveal-x, 50%) var(--reveal-y, 50%));
+    opacity: 0;
+  }
+  /* Snap to fully opaque quickly so the expanding circle reads as the only
+     transition; then let the circle grow slowly for a gradual reveal. */
+  12% { opacity: 1; }
+  100% {
+    clip-path: circle(150% at var(--reveal-x, 50%) var(--reveal-y, 50%));
+    opacity: 1;
+  }
 }
 
 /* ============ Layout helpers ============ */
